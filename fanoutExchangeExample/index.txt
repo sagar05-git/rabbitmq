@@ -1,0 +1,2 @@
+in this we made only temprory queue after complete task then queue automatically deleted
+--no use of routing keys

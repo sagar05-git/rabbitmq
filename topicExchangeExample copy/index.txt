@@ -1,0 +1,80 @@
+a topic is essentially a routing-key naming convention.
+order.created
+order.updated
+order.cancelled
+
+payment.success
+payment.failed
+payment.refunded
+
+user.created
+user.deleted
+
+These are called routing keys.
+
+They are usually structured as words separated by dots:
+word.word.word
+
+
+
+A topic exchange is an exchange that routes messages based on patterns in routing keys.
+
+--direct
+await channel.assertExchange(exchangeName, "direct", {
+            durable: true
+        });
+
+--topic
+await channel.assertExchange(exchangeName, "topic", {
+            durable: true
+        });
+
+
+in direct--->match exactly same routing key
+routing key = order.created. -->must match the binding key exactly:order.created
+
+but with With a topic exchange, you can use patterns:
+examples
+order.*-->exect one word after dot match--->order.created,order.payment
+order.#-->any or zero number of words after dot match--order.created.order.payment
+*.*.order-->created.pending.order--
+#.order.#-->reated.pending.logs.order.logs.xyz--anything before and after 
+
+
+
+Direct exchange
+Producer
+   │
+   │ routing key:
+   │ "order.created"
+   ▼
+Exchange
+   │
+   │ exact match
+   ▼
+order.created queue
+
+Binding:
+
+order.created
+
+Only:
+
+order.created
+
+matches.
+
+
+Topic exchange
+Producer
+   │
+   │ routing key:
+   │ "order.created"
+   ▼
+Topic Exchange
+   │
+   │ pattern matching
+   ▼
+order.* queue
+
+order.* matches order.created.
